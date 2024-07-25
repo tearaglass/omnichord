@@ -1,0 +1,49 @@
+.rhythm-section {
+    background-color: white;
+    padding: 25px;
+    border-radius: 15px;
+    margin-top: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .rhythm-section h3 {
+    margin-top: 0;
+    color: var(--primary-color);
+  }
+  
+  .rhythm-section button,
+  .rhythm-section select {
+    margin: 10px;
+    padding: 8px 16px;
+    font-size: 16px;
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .rhythm-section button:hover,
+  .rhythm-section select:hover {
+    background-color: #27ae60;
+  }
+  
+  .volume-controls {
+    margin-top: 20px;
+  }
+  
+  .volume-controls div {
+    margin-bottom: 15px;
+  }
+  
+  .volume-controls label {
+    display: inline-block;
+    width: 120px;
+    font-weight: bold;
+  }
+  
+  .volume-controls input[type="range"] {
+    width: 200px;
+    margin-left: 10px;
+  }

@@ -1,0 +1,16 @@
+.sequencer {
+  display: flex;
+  gap: 5px;
+  margin-top: 20px;
+}
+
+.sequencer button {
+  width: 30px;
+  height: 30px;
+  border: 1px solid black;
+  background-color: white;
+}
+
+.sequencer button.on {
+  background-color: yellow;
+}
