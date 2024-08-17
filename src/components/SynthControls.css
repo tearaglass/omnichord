@@ -1,67 +1,71 @@
 .synth-controls {
-    background-color: #f0f0f0;
-    padding: 20px;
-    border-radius: 10px;
-    margin-top: 20px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  }
-  
-  .synth-controls h3 {
-    margin-top: 0;
-    margin-bottom: 15px;
-    color: #333;
-  }
-  
-  .control-group {
-    margin-bottom: 15px;
-  }
-  
-  .control-group label {
-    display: inline-block;
-    width: 150px;
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: #555;
-  }
-  
-  .control-group select,
-  .control-group input[type="range"] {
-    width: 200px;
-    padding: 5px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-  }
-  
-  .control-group select {
-    background-color: white;
-  }
-  
-  .control-group input[type="range"] {
-    -webkit-appearance: none;
-    background: #d3d3d3;
-    outline: none;
-    opacity: 0.7;
-    transition: opacity .2s;
-  }
-  
-  .control-group input[type="range"]:hover {
-    opacity: 1;
-  }
-  
-  .control-group input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 20px;
-    height: 20px;
-    background: #4CAF50;
-    cursor: pointer;
-    border-radius: 50%;
-  }
-  
-  .control-group input[type="range"]::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
-    background: #4CAF50;
-    cursor: pointer;
-    border-radius: 50%;
-  }
+  background-color: var(--surface-color);
+  padding: 25px;
+  border-radius: 15px;
+  margin-top: 30px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.synth-controls h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.control-group {
+  margin-bottom: 20px;
+}
+
+.control-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.control-group select,
+.control-group input[type="range"] {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-family: 'Poppins', sans-serif;
+}
+
+.control-group select {
+  background-color: var(--surface-color);
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+.control-group input[type="range"] {
+  -webkit-appearance: none;
+  height: 8px;
+  background: #ddd;
+  outline: none;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.control-group input[type="range"]:hover {
+  opacity: 1;
+}
+
+.control-group input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--secondary-color);
+  cursor: pointer;
+}
+
+.control-group input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--secondary-color);
+  cursor: pointer;
+}
