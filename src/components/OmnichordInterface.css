@@ -1,65 +1,43 @@
 .omnichord-interface {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 30px;
-    background-color: white;
-    border-radius: 15px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin: 20px auto;
-    max-width: 800px;
-  }
-  
-  .mode-controls {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 30px;
-    width: 100%;
-  }
-  
-  .mode-controls button {
-    padding: 12px 24px;
-    font-size: 16px;
-    background-color: var(--secondary-color);
-    color: white;
-    border: none;
-    border-radius: 25px;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.1s;
-  }
-  
-  .mode-controls button:hover {
-    background-color: #27ae60;
-    transform: translateY(-2px);
-  }
-  
-  .master-controls {
-    background-color: var(--background-color);
-    padding: 20px;
-    border-radius: 10px;
-    margin-top: 30px;
-    width: 100%;
-  }
-  
-  .master-controls .control-group {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-  }
-  
-  .master-controls label {
-    width: 120px;
-    margin-right: 15px;
-    font-weight: bold;
-  }
-  
-  .master-controls input[type="range"] {
-    flex-grow: 1;
-    margin-right: 15px;
-  }
-  
-  .master-controls span {
-    width: 60px;
-    text-align: right;
-    font-weight: bold;
-  }
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  padding: 30px;
+  background-color: rgb(255, 208, 248);
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin: 20px auto;
+  max-width: 1000px;
+}
+
+.mode-controls {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.mode-controls button {
+  padding: 12px 24px;
+  font-size: 16px;
+  background-color: var(--button-color);
+  color: var(--text-color);
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.1s;
+  margin: 0 10px;
+}
+
+.mode-controls button:hover {
+  background-color: var(--secondary-color);
+  transform: translateY(-2px);
+}
+
+.master-controls {
+  grid-column: 1 / -1;
+  background-color: var(--background-color);
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 30px;
+}

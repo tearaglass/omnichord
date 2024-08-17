@@ -1,0 +1,33 @@
+.drum-settings-panel {
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 20px;
+  }
+  
+  .drum-settings-panel h4 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #333;
+  }
+  
+  .drum-setting {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .drum-setting label {
+    width: 100px;
+    margin-right: 10px;
+  }
+  
+  .drum-setting input[type="range"] {
+    flex-grow: 1;
+    margin-right: 10px;
+  }
+  
+  .drum-setting span {
+    width: 50px;
+    text-align: right;
+  }

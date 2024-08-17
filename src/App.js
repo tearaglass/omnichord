@@ -14,9 +14,9 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Omnichord App</h1>
+      <h1>~omnichord~</h1>
       {!isStarted ? (
-        <button onClick={handleStart}>Start Audio</button>
+        <button onClick={handleStart}>let's play!</button>
       ) : (
         <OmnichordInterface />
       )}

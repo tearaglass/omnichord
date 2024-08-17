@@ -1,253 +1,132 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import * as Tone from 'tone';
 import './RhythmSection.css';
+import DrumSequencer from './DrumSequencer';
+import DrumSettingsPanel from './DrumSettingsPanel';
 
 function RhythmSection() {
-    const [isPlaying, setIsPlaying] = useState(false);
-    const [currentPattern, setCurrentPattern] = useState('Basic Beat');
-    const [volumes, setVolumes] = useState({
-      kick: 0,
-      snare: 0,
-      hihat: 0,
-      crash: 0,
-      ride: 0,
-      openHihat: 0
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [selectedDrum, setSelectedDrum] = useState('kick');
+  const [drumSettings, setDrumSettings] = useState({
+    kick: { volume: 0, pitch: 0, frequency: 100, decay: 0.5 },
+    snare: { volume: 0, pitch: 0, noise: 0.5, decay: 0.2 },
+    hihat: { volume: 0, pitch: 0, frequency: 500, decay: 0.1 },
+    crash: { volume: 0, pitch: 0, frequency: 600, decay: 1 },
+    ride: { volume: 0, pitch: 0, frequency: 400, decay: 0.8 },
+    openHihat: { volume: 0, pitch: 0, frequency: 700, decay: 0.3 },
+  });
+
+  const instrumentRefs = useRef({
+    kick: null,
+    snare: null,
+    hihat: null,
+    crash: null,
+    ride: null,
+    openHihat: null
+  });
+
+  const safeDispose = useCallback((toneObject) => {
+    if (toneObject && typeof toneObject.dispose === 'function') {
+      try {
+        toneObject.dispose();
+      } catch (error) {
+        console.warn('Error disposing Tone.js object:', error);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    // Create drum sounds
+    instrumentRefs.current.kick = new Tone.MembraneSynth().toDestination();
+    instrumentRefs.current.snare = new Tone.NoiseSynth({
+      noise: { type: 'white' },
+      envelope: { attack: 0.005, decay: 0.1, sustain: 0 }
+    }).toDestination();
+    instrumentRefs.current.hihat = new Tone.MetalSynth().toDestination();
+    instrumentRefs.current.crash = new Tone.MetalSynth().toDestination();
+    instrumentRefs.current.ride = new Tone.MetalSynth().toDestination();
+    instrumentRefs.current.openHihat = new Tone.NoiseSynth({
+      noise: { type: 'white' },
+      envelope: { attack: 0.001, decay: 0.5, sustain: 0.1, release: 0.2 }
+    }).toDestination();
+
+    return () => {
+      Object.values(instrumentRefs.current).forEach(safeDispose);
+    };
+  }, [safeDispose]);
+
+  useEffect(() => {
+    // Update instrument settings
+    Object.entries(drumSettings).forEach(([instrument, settings]) => {
+      if (instrumentRefs.current[instrument]) {
+        instrumentRefs.current[instrument].volume.value = settings.volume;
+        if (instrument === 'kick' || instrument === 'hihat' || instrument === 'crash' || instrument === 'ride') {
+          instrumentRefs.current[instrument].frequency.value = settings.frequency;
+        }
+        if (instrument === 'snare' || instrument === 'openHihat') {
+          instrumentRefs.current[instrument].noise.type = settings.noise > 0.5 ? 'white' : 'pink';
+        }
+        instrumentRefs.current[instrument].envelope.decay = settings.decay;
+      }
     });
-  
-    const kickRef = useRef(null);
-    const snareRef = useRef(null);
-    const hihatRef = useRef(null);
-    const crashRef = useRef(null);
-    const rideRef = useRef(null);
-    const openHihatRef = useRef(null);
-    const loopRef = useRef(null);
-  
-    const rhythmPatterns = {
-      'Basic Beat': '4n',
-      'Waltz': '3n',
-      'Bossa Nova': '8n',
-      'Rock/4 on the Floor': '4n',
-      'Funk': '16n',
-      'Jungle/Drum & Bass': '8n.',
-      'Tribal': '3n.',
-      'Electronic/Dance': '8n',
-      'Hip-Hop': '4n.', 
-      'House': '8n',
-      'Breakbeat': '16n'
-    };
-  
-    useEffect(() => {
-      // Create drum sounds
-      kickRef.current = new Tone.MembraneSynth().toDestination();
-      snareRef.current = new Tone.NoiseSynth({
-        noise: { type: 'white' },
-        envelope: { attack: 0.005, decay: 0.1, sustain: 0 }
-      }).toDestination();
-      hihatRef.current = new Tone.MetalSynth({
-        frequency: 200,
-        envelope: { attack: 0.001, decay: 0.1, release: 0.01 },
-        harmonicity: 5.1,
-        modulationIndex: 32,
-        resonance: 4000,
-        octaves: 1.5
-      }).toDestination();
-      crashRef.current = new Tone.MetalSynth({
-        frequency: 500,
-        envelope: { attack: 0.1, decay: 1, release: 0.5 },
-        harmonicity: 3.1,
-        modulationIndex: 16,
-        resonance: 4000,
-        octaves: 1
-      }).toDestination();
-      rideRef.current = new Tone.MetalSynth({
-        frequency: 300,
-        envelope: { attack: 0.05, decay: 0.5, release: 0.3 },
-        harmonicity: 5.1,
-        modulationIndex: 24,
-        resonance: 4000,
-        octaves: 1.2
-      }).toDestination();
-      openHihatRef.current = new Tone.NoiseSynth({
-        noise: { type: 'white' },
-        envelope: { attack: 0.001, decay: 0.5, sustain: 0.1, release: 0.2 }
-      }).toDestination();
-  
-      return () => {
-        if (kickRef.current) kickRef.current.dispose();
-        if (snareRef.current) snareRef.current.dispose();
-        if (hihatRef.current) hihatRef.current.dispose();
-        if (crashRef.current) crashRef.current.dispose();
-        if (rideRef.current) rideRef.current.dispose();
-        if (openHihatRef.current) openHihatRef.current.dispose();
-        if (loopRef.current) loopRef.current.dispose();
-      };
-    }, []);
-  
-    useEffect(() => {
-      // Update volumes
-      if (kickRef.current) kickRef.current.volume.value = volumes.kick;
-      if (snareRef.current) snareRef.current.volume.value = volumes.snare;
-      if (hihatRef.current) hihatRef.current.volume.value = volumes.hihat;
-      if (crashRef.current) crashRef.current.volume.value = volumes.crash;
-      if (rideRef.current) rideRef.current.volume.value = volumes.ride;
-      if (openHihatRef.current) openHihatRef.current.volume.value = volumes.openHihat;
-    }, [volumes]);
-  
-    const togglePlay = () => {
-      if (!isPlaying) {
-        Tone.Transport.start();
-        loopRef.current = new Tone.Loop((time) => {
-          switch (currentPattern) {
-            case 'Basic Beat':
-              kickRef.current.triggerAttackRelease('C2', '8n', time);
-              snareRef.current.triggerAttackRelease('16n', time + 0.25);
-              hihatRef.current.triggerAttackRelease('32n', time + 0.125);
-              break;
-            case 'Waltz':
-              kickRef.current.triggerAttackRelease('C2', '8n', time);
-              snareRef.current.triggerAttackRelease('8n', time + 0.5);
-              hihatRef.current.triggerAttackRelease('8n', time + 0.25, 0.25);
-              break;
-            case 'Bossa Nova':
-              kickRef.current.triggerAttackRelease('C2', '16n', time);
-              snareRef.current.triggerAttackRelease('16n', time + 0.5);
-              hihatRef.current.triggerAttackRelease('16n', time + 0.25, 0.25);
-              break;
-            case 'Rock/4 on the Floor':
-              kickRef.current.triggerAttackRelease('C2', '8n', time);
-              snareRef.current.triggerAttackRelease('8n', time + 0.5);
-              hihatRef.current.triggerAttackRelease('8n', time + 0.25, 0.25);
-              break;
-            case 'Funk':
-              kickRef.current.triggerAttackRelease('C2', '16n', time);
-              snareRef.current.triggerAttackRelease('16n', time + 0.5);
-              hihatRef.current.triggerAttackRelease('32n', time + 0.25, 0.25);
-              break;
-            case 'Jungle/Drum & Bass':
-              kickRef.current.triggerAttackRelease('C2', '8n.', time);
-              snareRef.current.triggerAttackRelease('8n.', time + 0.5);
-              hihatRef.current.triggerAttackRelease('16n', time + 0.25, 0.25);
-              break;
-            case 'Tribal':
-              kickRef.current.triggerAttackRelease('C2', '3n.', time);
-              snareRef.current.triggerAttackRelease('3n.', time + 1);
-              hihatRef.current.triggerAttackRelease('3n.', time + 0.5, 0.5);
-              break;
-            case 'Electronic/Dance':
-              kickRef.current.triggerAttackRelease('C2', '8n', time);
-              snareRef.current.triggerAttackRelease('8n', time + 0.5);
-              hihatRef.current.triggerAttackRelease('8n', time + 0.25, 0.25);
-              break;
-            case 'Hip-Hop':
-              kickRef.current.triggerAttackRelease('C2', '4n.', time);
-              snareRef.current.triggerAttackRelease('4n.', time + 0.5);
-              hihatRef.current.triggerAttackRelease('8n', time + 0.25, 0.25);
-              break;
-            case 'House':
-              kickRef.current.triggerAttackRelease('C2', '8n', time);
-              snareRef.current.triggerAttackRelease('8n', time + 0.5);
-              hihatRef.current.triggerAttackRelease('8n', time + 0.25, 0.25);
-              break;
-            case 'Breakbeat':
-              kickRef.current.triggerAttackRelease('C2', '16n', time);
-              snareRef.current.triggerAttackRelease('16n', time + 0.5);
-              hihatRef.current.triggerAttackRelease('16n', time + 0.25, 0.25);
-              break;
-            default:
-              break;
-          }
-        }, rhythmPatterns[currentPattern]).start(0);
+  }, [drumSettings]);
+
+  const handleSettingChange = (instrument, setting, value) => {
+    setDrumSettings(prevSettings => ({
+      ...prevSettings,
+      [instrument]: {
+        ...prevSettings[instrument],
+        [setting]: value
+      }
+    }));
+  };
+
+  const togglePlay = () => {
+    setIsPlaying(!isPlaying);
+  };
+
+  const triggerDrumSound = (instrument) => {
+    const lowercaseInstrument = instrument.toLowerCase();
+    if (instrumentRefs.current[lowercaseInstrument]) {
+      const pitch = drumSettings[lowercaseInstrument].pitch;
+      if (lowercaseInstrument === 'kick') {
+        instrumentRefs.current[lowercaseInstrument].triggerAttackRelease(Tone.Frequency('C2').transpose(pitch), '8n');
       } else {
-        Tone.Transport.stop();
-        if (loopRef.current) loopRef.current.stop();
+        instrumentRefs.current[lowercaseInstrument].triggerAttackRelease('8n');
       }
-      setIsPlaying(!isPlaying);
-    };
-  
-    const changePattern = (pattern) => {
-      setCurrentPattern(pattern);
-      if (loopRef.current) {
-        loopRef.current.interval = rhythmPatterns[pattern];
-      }
-    };
-  
-    const handleVolumeChange = (drum, value) => {
-      setVolumes(prev => ({ ...prev, [drum]: value }));
-    };
-  
-    return (
-      <div className="rhythm-section">
-        <h3>Rhythm Section</h3>
-        <button onClick={togglePlay}>{isPlaying ? 'Stop' : 'Play'} Rhythm</button>
-        <select value={currentPattern} onChange={(e) => changePattern(e.target.value)}>
-          {Object.keys(rhythmPatterns).map(pattern => (
-            <option key={pattern} value={pattern}>{pattern}</option>
+    }
+  };
+
+  return (
+    <div className="rhythm-section">
+      <h3>Rhythm Section</h3>
+      <div className="sequencer-container">
+        <DrumSequencer 
+          isPlaying={isPlaying} 
+          onPlayToggle={togglePlay} 
+          onTriggerSound={triggerDrumSound}
+        />
+      </div>
+      <div className="drum-controls">
+        <select 
+          value={selectedDrum} 
+          onChange={(e) => setSelectedDrum(e.target.value)}
+          className="drum-selector"
+        >
+          {Object.keys(drumSettings).map(drum => (
+            <option key={drum} value={drum}>
+              {drum.charAt(0).toUpperCase() + drum.slice(1)}
+            </option>
           ))}
         </select>
-        <div className="volume-controls">
-          <div>
-            <label>Kick Volume:</label>
-            <input
-              type="range"
-              min="-60"
-              max="0"
-              value={volumes.kick}
-              onChange={(e) => handleVolumeChange('kick', Number(e.target.value))}
-            />
-          </div>
-          <div>
-  <label>Snare Volume:</label>
-  <input
-    type="range"
-    min="-60"
-    max="0"
-    value={volumes.snare}
-    onChange={(e) => handleVolumeChange('snare', Number(e.target.value))}
-  />
-</div>
-<div>
-  <label>Hi-hat Volume:</label>
-  <input
-    type="range"
-    min="-60"
-    max="0"
-    value={volumes.hihat}
-    onChange={(e) => handleVolumeChange('hihat', Number(e.target.value))}
-  />
-</div>
-          <div>
-            <label>Crash Volume:</label>
-            <input
-              type="range"
-              min="-60"
-              max="0"
-              value={volumes.crash}
-              onChange={(e) => handleVolumeChange('crash', Number(e.target.value))}
-            />
-          </div>
-          <div>
-            <label>Ride Volume:</label>
-            <input
-              type="range"
-              min="-60"
-              max="0"
-              value={volumes.ride}
-              onChange={(e) => handleVolumeChange('ride', Number(e.target.value))}
-            />
-          </div>
-          <div>
-            <label>Open Hi-hat Volume:</label>
-            <input
-              type="range"
-              min="-60"
-              max="0"
-              value={volumes.openHihat}
-              onChange={(e) => handleVolumeChange('openHihat', Number(e.target.value))}
-            />
-          </div>
-        </div>
+        <DrumSettingsPanel
+          selectedDrum={selectedDrum}
+          drumSettings={drumSettings[selectedDrum]}
+          onSettingChange={handleSettingChange}
+        />
       </div>
-    );
-  }
-  
-  export default RhythmSection;
+    </div>
+  );
+}
+
+export default RhythmSection;

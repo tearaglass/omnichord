@@ -1,0 +1,79 @@
+.drum-sequencer {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 15px;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .sequencer-row {
+    display: flex;
+    align-items: center;
+  }
+  
+  .instrument-name {
+    width: 80px;
+    text-align: right;
+    margin-right: 10px;
+    font-weight: bold;
+    font-size: 0.8em;
+  }
+  
+  .sequencer-cells {
+    display: flex;
+    flex-grow: 1;
+  }
+  
+  .sequencer-cell {
+    width: 20px;
+    height: 20px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    margin: 0 1px;
+    padding: 0;
+    cursor: pointer;
+  }
+  
+  .sequencer-cell.active {
+    background-color: #4CAF50;
+  }
+  
+  .sequencer-cell.current {
+    border-color: #f44336;
+  }
+  
+  .sequencer-controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+  }
+  
+  .play-button,
+  .clear-button {
+    padding: 8px 16px;
+    font-size: 14px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .play-button {
+    background-color: #2196F3;
+  }
+  
+  .play-button:hover {
+    background-color: #1976D2;
+  }
+  
+  .clear-button {
+    background-color: #f44336;
+  }
+  
+  .clear-button:hover {
+    background-color: #d32f2f;
+  }
