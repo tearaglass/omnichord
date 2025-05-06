@@ -1,0 +1,6 @@
+{
+    "rootNote": "D3",
+    "mode": "FractureMode",
+    "effects": ["portalDelay", "bitcrush"],
+    "drone": true
+  }

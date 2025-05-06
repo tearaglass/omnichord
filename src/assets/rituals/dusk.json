@@ -1,0 +1,6 @@
+{
+    "rootNote": "A2",
+    "mode": "DriftMode",
+    "effects": ["shimmer"],
+    "drone": true
+  }
